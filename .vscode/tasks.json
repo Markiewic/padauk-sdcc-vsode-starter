@@ -1,0 +1,78 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+    },
+    "tasks": [
+        {
+            "label": "Build current file",
+            "type": "shell",
+            "command": [
+                "(if not exist \"out${pathSeparator}obj${pathSeparator}${relativeFileDirname}\" (mkdir \"out${pathSeparator}obj${pathSeparator}${relativeFileDirname}\"))",
+                "&&",
+                "sdcc -${input:bitDepth} -c \"${file}\" -o \"out${pathSeparator}obj${pathSeparator}${relativeFileDirname}${pathSeparator}${fileBasenameNoExtension}.rel\"",
+                "&&",
+                "(if not exist \"out${pathSeparator}bin${pathSeparator}${relativeFileDirname}\" (mkdir \"out${pathSeparator}bin${pathSeparator}${relativeFileDirname}\"))",
+                "&&",
+                "sdcc -${input:bitDepth} \"out${pathSeparator}obj${pathSeparator}${relativeFileDirname}${pathSeparator}${fileBasenameNoExtension}.rel\" -o \"out${pathSeparator}bin${pathSeparator}${relativeFileDirname}${pathSeparator}${fileBasenameNoExtension}.hex\"",
+                "&&",
+                "echo Done"
+            ],
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
+            "label": "Write to MC",
+            "type": "shell",
+            "command": [
+                "easypdkprog -n ${input:mc} write \"out${pathSeparator}bin${pathSeparator}${relativeFileDirname}${pathSeparator}${fileBasenameNoExtension}.hex\"",
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Probe MC",
+            "type": "shell",
+            "command": [
+                "easypdkprog probe",
+            ],
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "type": "pickString",
+            "description": "Select bit depth",
+            "id": "bitDepth",
+            "options": [
+                "mpdk13",
+                "mpdk14",
+                "mpdk15"
+            ],
+            "default": "mpdk14"
+        },
+        {
+            "type": "pickString",
+            "description": "Select MC",
+            "id": "mc",
+            "options": [
+                "PFS154",
+                "PFS172",
+                "PFS173",
+                "PMS150C",
+                "PMS152",
+                "PMS154B",
+                "PMS154C",
+                "PMS15A",
+                "PMS171B"
+            ],
+            "default": "PFS154"
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "files.associations": {
+        "auto_sysclock.h": "c",
+        "device.h": "c",
+        "stdbool.h": "c"
+    }
+}
